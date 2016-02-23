@@ -1,3 +1,4 @@
+import java.util.*;
 
 public class InFixEvaluator {
 
@@ -14,67 +15,115 @@ public class InFixEvaluator {
 		}
 		return true;
 	}
-
+	
 	public static double evaluateInfix(String expression) throws Exception{
-		expression = expression.replace("(", " ( ");
-		expression = expression.replace(")", " ) ");
-		
-		String[] exp = expression.split("[ ]+");
-		
 		if(isInfix(expression)){
-
+			expression = expression.replace("(", " ( ");
+			expression = expression.replace(")", " ) ");
 			
+			ArrayList<String> exp = new ArrayList<String>(Arrays.asList(expression.split("[ ]+")));
+			while(exp.contains("")){
+				exp.remove("");
+			}
 			
-		}else{
-			throw new Exception();
+			return toNumber(eval(exp));	
 		}
-		return 0;
+		return -1;
 	}
+		
+	private static String eval(ArrayList<String> exp) throws Exception{
+		
+		String[] operators = {"^", "*", "/", "+", "-"};
+		int loc  = 1;
+		for(String op: operators){
+			while(exp.contains(op)){
+				loc = exp.indexOf(op);
+				String lft = exp.get(loc - 1);
+				String rht = exp.get(loc + 1);
+				
+				
+				if(")".equals(lft)){
+					ArrayList<String> lftSide = new ArrayList<String>();
+					int numOpenBraces = 0;
+					
+					do{
+						lftSide.add(0, exp.get(loc - 1));
+						
+						if(")".equals(exp.get(loc - 1))){
+							numOpenBraces++;
+							exp.remove(loc - 1);
+							loc--;
+						}else if("(".equals(exp.get(loc - 1))){
+							numOpenBraces--;
+							if(numOpenBraces > 1){exp.remove(loc - 1);loc--;}
+						}else{
+							exp.remove(loc - 1);
+							loc--;
+						}
+					}while(numOpenBraces > 0);
+				
+					lft = eval(lftSide);
+					exp.set(loc - 1, lft);
+				}
+				
+				if("(".equals(rht)){
+					ArrayList<String> rhtSide = new ArrayList<String>();
+					int numOpenBraces = 0;
+					
+					do{
+						rhtSide.add(exp.get(loc + 1));
+						
+						if("(".equals(exp.get(loc + 1))){
+							numOpenBraces++;
+							exp.remove(loc + 1);
+						}else if(")".equals(exp.get(loc + 1))){
+							numOpenBraces--;
+							if(numOpenBraces > 1){exp.remove(loc + 1);}
+						}else{
+							exp.remove(loc + 1);
+						}
+					}while(numOpenBraces > 0);
+					
+					rht = eval(rhtSide);
+					exp.set(loc + 1, rht);
+				}
+				
+				exp.set(loc, Double.toString(doOperator(exp.get(loc), toNumber(lft), toNumber(rht))));
+				exp.remove(loc + 1);
+				exp.remove(loc - 1);
+				loc--;
+			}
+		}
+		return exp.get(loc);
+	}	
 	
-	private static double evalExpression(String[] expression, int index){
-		if(isOperator(expression[index])){
-			index++;
-			//return doOpertor(expression[index - 1], toNumber(expression[index - 2]), evalExpression(expression, index));
-		}else if(isNumber(expression[index])){
-			index++;
-			//return toNumber(evalExpression(String[] expression, index));
-		}else{
-			index++;
-			return 0;
-		} 
-	}
-	
-	private static double doOpertor(String op, val1, val2){
+	private static double doOperator(String op, double val1, double val2){
+		double ret = 0;
 		switch(op){
 		case "+":
-			return val1 + val2;
+			ret = val1 + val2;
 			break;
 		case "-":
-			return val1 - val2;
+			ret = val1 - val2;
 			break;
 		case "*":
-			return val1 * val2;
+			ret = val1 * val2;
 			break;
 		case "/":
-			return val1 / val2;
+			ret = val1 / val2;
 			break;
 		case "^":
-			return val1 ^ val2;
+			ret = Math.pow(val1, val2);
 			break;
 		default:
-			throw new Exception();
+			return -1;
+		
 		}
-	}
-	
-	
-	
-	
-	private static boolean isOperator(String operand){
-		return operand.matches("[+-*/\\^]");
+		return ret;
 	}
 	
 	private static boolean isNumeric(String operand){
-		return operand.matches("[0-9]");
+		return operand.matches("[0-9\\.]+");
 	}
 	
 	private static double toNumber(String num){
