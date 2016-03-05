@@ -20,14 +20,14 @@ public class UnitTests {
 		
 		System.out.print("Testing isInfix: ");
 		for(String str : inFixExpressions){
-			assert true == InFixEvaluator.isInfix(str);
+			assert true == RecursiveInFixEvaluator.isInfix(str);
 		}
 		System.out.println("PASS");
 		
 		
 		System.out.print("Testing isPostFix: ");
 		for(String str : postFixExpressions){
-			assert true == PostFixEvaluator.isPostfix(str);
+			assert true == RecursivePostFixEvaluator.isPostfix(str);
 		}
 		
 		System.out.println("PASS");
@@ -35,13 +35,13 @@ public class UnitTests {
 		
 		System.out.print("Testing evaluateInFix: ");
 		for(String expression : inFixExpressions){
-			System.out.print(InFixEvaluator.evaluateInfix(expression) + ", ");
+			System.out.print(RecursiveInFixEvaluator.evaluateInfix(expression) + ", ");
 		}
 		System.out.println("PASS");
 		
 		System.out.print("Testing evaluatePostFix: ");
 		for(String expression : postFixExpressions){
-			System.out.print(PostFixEvaluator.evaluatePostfix(expression) + ", ");
+			System.out.print(RecursivePostFixEvaluator.evaluatePostfix(expression) + ", ");
 		}
 		System.out.println("PASS");
 	}

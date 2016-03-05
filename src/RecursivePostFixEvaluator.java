@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class PostFixEvaluator {
+public class RecursivePostFixEvaluator {
 
 	public static boolean isPostfix(String expression) {
 		String[] exp = expression.split("[ ]*?");
@@ -66,9 +66,6 @@ public class PostFixEvaluator {
 			break;
 		case "/":
 			ret = val1 / val2;
-			break;
-		case "^":
-			ret = Math.pow(val1, val2);
 			break;
 		default:
 			return -1;

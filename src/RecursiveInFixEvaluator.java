@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class InFixEvaluator {
+public class RecursiveInFixEvaluator {
 
 	public static boolean isInfix(String expression) {
 		expression = expression.replace("(", " ( ");
